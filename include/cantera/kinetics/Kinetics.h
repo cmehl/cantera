@@ -1352,6 +1352,10 @@ public:
     //! excludes the reaction definitions, which are handled separately.
     AnyMap parameters() const;
 
+    //! Add model-specific parameters to the phase definition returned by
+    //! parameters(). Default: nothing to add.
+    virtual void getParameters(AnyMap& phaseNode) const {}
+
     /**
      * Resize arrays with sizes that depend on the total number of species.
      * Automatically called before adding each Reaction and Phase.

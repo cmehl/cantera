@@ -718,6 +718,7 @@ AnyMap Kinetics::parameters() const
             out["rate-multipliers"] = multiplierMap;
         }
     }
+    getParameters(out);
     return out;
 }
 

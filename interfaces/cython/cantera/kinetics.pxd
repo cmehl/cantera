@@ -79,6 +79,16 @@ cdef extern from "cantera/kinetics/InterfaceKinetics.h":
         double interfaceCurrent(size_t) except +translate_exception
 
 
+cdef extern from "cantera/kinetics/QSSKinetics.h":
+    cdef cppclass CxxQSSKinetics "Cantera::QSSKinetics" (CxxKinetics):
+        vector[string] qssSpeciesNames()
+        size_t nQSS()
+        void getQSSConcentrations(double*) except +translate_exception
+        void getQSSResiduals(double*) except +translate_exception
+
+ctypedef CxxQSSKinetics* CxxQSSKineticsPtr
+
+
 cdef extern from "cantera/cython/kinetics_utils.h":
     cdef size_t CxxSparseTriplets "sparseTriplets" (CxxSparseMatrix, int*, int*, double*, size_t) except +translate_exception
     cdef void CxxSparseCscData "sparseCscData" (CxxSparseMatrix, double*, int*, int*) except +translate_exception

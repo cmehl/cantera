@@ -9,6 +9,7 @@
 #include "cantera/kinetics/BulkKinetics.h"
 #include "cantera/kinetics/InterfaceKinetics.h"
 #include "cantera/kinetics/EdgeKinetics.h"
+#include "cantera/kinetics/QSSKinetics.h"
 #include "cantera/kinetics/Reaction.h"
 #include "cantera/thermo/ThermoPhase.h"
 #include "cantera/base/stringUtils.h"
@@ -35,6 +36,7 @@ KineticsFactory::KineticsFactory() {
     addDeprecatedAlias("surface", "surf");
     reg("edge", []() { return new EdgeKinetics(); });
     addDeprecatedAlias("edge", "Edge");
+    reg("qss", []() { return new QSSKinetics(); });
 }
 
 KineticsFactory* KineticsFactory::factory() {
@@ -92,6 +94,12 @@ shared_ptr<Kinetics> newKinetics(const vector<shared_ptr<ThermoPhase>>& phases,
     }
     kin->setParameters(phaseNode);
     kin->init();
+    if (kinType == "qss") {
+        // Reactions involve species absent from the (transported) phase and are
+        // held by the internal full mechanism of the QSS kinetics manager
+        std::dynamic_pointer_cast<QSSKinetics>(kin)->setupQSS(phaseNode, rootNode);
+        return kin;
+    }
     addReactions(*kin, phaseNode, rootNode);
     return kin;
 }

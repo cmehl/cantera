@@ -105,6 +105,46 @@ cdef class Kinetics(_SolutionBase):
         def __get__(self):
             return self.kinetics.nReactions()
 
+    property qss_species_names:
+        """
+        Names of the quasi-steady-state (QSS) species, which are not part of
+        the phase. Empty unless the kinetics model is ``qss``.
+        """
+        def __get__(self):
+            cdef CxxQSSKinetics* qk = dynamic_cast[CxxQSSKineticsPtr](self.kinetics)
+            if not qk:
+                return []
+            return [pystr(name) for name in qk.qssSpeciesNames()]
+
+    property qss_concentrations:
+        """
+        Concentrations [kmol/m³] of the QSS species at the current state, in the
+        order of `qss_species_names`. Requires the ``qss`` kinetics model.
+        """
+        def __get__(self):
+            cdef CxxQSSKinetics* qk = dynamic_cast[CxxQSSKineticsPtr](self.kinetics)
+            if not qk:
+                raise ValueError("Requires the 'qss' kinetics model")
+            cdef np.ndarray[np.double_t, ndim=1] data = np.zeros(qk.nQSS())
+            if qk.nQSS():
+                qk.getQSSConcentrations(&data[0])
+            return data
+
+    property qss_residuals:
+        """
+        Net production rates [kmol/m³/s] of the QSS species at the current state
+        (residual of the QSS balance, ideally zero). Requires the ``qss``
+        kinetics model.
+        """
+        def __get__(self):
+            cdef CxxQSSKinetics* qk = dynamic_cast[CxxQSSKineticsPtr](self.kinetics)
+            if not qk:
+                raise ValueError("Requires the 'qss' kinetics model")
+            cdef np.ndarray[np.double_t, ndim=1] data = np.zeros(qk.nQSS())
+            if qk.nQSS():
+                qk.getQSSResiduals(&data[0])
+            return data
+
     property n_phases:
         """Number of phases in the reaction mechanism."""
         def __get__(self):
