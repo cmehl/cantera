@@ -1,5 +1,15 @@
 # QSS kinetics in Cantera (mechred fork)
 
+> **This is a modified version of Cantera 3.2.0, not an official Cantera
+> release.** The QSS kinetics model described below was added by IFP Energies
+> nouvelles (IFPEN) for mechred, a reduction tool for
+> chemical kinetic mechanisms. Cantera is distributed under the BSD 3-clause
+> license (`License.txt`); the additions of this branch are under the same
+> license. Copyright of the additions: 2026 IFP Energies nouvelles (IFPEN).
+> They were developed with the assistance of an AI coding assistant (Claude,
+> Anthropic) and reviewed by the author. Everything outside the files listed
+> in *Changes from Cantera 3.2.0* below is unchanged Cantera 3.2.0.
+
 This branch (`qss`, based on Cantera 3.2.0) adds a kinetics model, `qss`, which
 applies the quasi-steady-state (QSS) approximation to selected species. A QSS
 species is not transported: its concentration is solved from ω̇ = 0 at each
